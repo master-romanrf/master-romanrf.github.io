@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Инспектор сайта — Мастер Роман</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#030814">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#030814;--bg2:#071120;--panel:#0a1528;--panel2:#0d1a30;--line:#1a2d4d;--line2:#24406b;
+  --orange:#ff7a00;--amber:#ffb347;--cyan:#00e5ff;--blue:#2f7bff;--green:#00e676;--magenta:#ff3d81;--red:#ff4757;
+  --txt:#e8edf5;--muted:#7a8ba8;--soft:#b8c4d6;--nav:60px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--txt);line-height:1.55;min-height:100vh;overflow-x:hidden;scrollbar-color:var(--orange) var(--bg2);}
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--orange),var(--magenta));border-radius:8px;border:2px solid var(--bg2);}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--amber),var(--cyan));}
+.bg-aurora,.bg-grid,.bg-grain{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.bg-aurora{overflow:hidden;}
+.bg-aurora i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.28;will-change:transform;}
+.bg-aurora i:nth-child(1){width:60vmax;height:60vmax;left:-25vmax;top:-22vmax;background:radial-gradient(circle at 30% 30%,var(--blue),transparent 60%);animation:d1 26s ease-in-out infinite alternate;}
+.bg-aurora i:nth-child(2){width:52vmax;height:52vmax;right:-22vmax;top:8vmax;background:radial-gradient(circle at 60% 40%,var(--orange),transparent 60%);opacity:.20;animation:d2 32s ease-in-out infinite alternate;}
+.bg-aurora i:nth-child(3){width:46vmax;height:46vmax;left:-12vmax;bottom:-24vmax;background:radial-gradient(circle at 50% 50%,var(--magenta),transparent 60%);opacity:.14;animation:d3 38s ease-in-out infinite alternate;}
+@keyframes d1{to{transform:translate3d(8vmax,6vmax,0) scale(1.1);}}
+@keyframes d2{to{transform:translate3d(-6vmax,8vmax,0) scale(1.15);}}
+@keyframes d3{to{transform:translate3d(6vmax,-6vmax,0) scale(1.05);}}
+.bg-grid{background-image:linear-gradient(rgba(0,229,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.05) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000,transparent 75%);mask-image:radial-gradient(ellipse at 50% 0%,#000,transparent 75%);}
+.bg-grain{opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");}
+.nav{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;height:var(--nav);padding:0 16px;background:rgba(3,8,20,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+.ring{width:34px;height:34px;border-radius:50%;border:3px solid var(--orange);box-shadow:0 0 12px rgba(255,122,0,.5);flex-shrink:0;}
+.nav b{font-family:'Courier New',monospace;letter-spacing:2px;font-size:14px;}
+.nav b i{color:var(--cyan);font-style:normal;}
+.nav a{margin-left:auto;color:var(--cyan);text-decoration:none;font-size:12px;font-family:'Courier New',monospace;border:1px solid var(--line2);padding:8px 11px;border-radius:10px;transition:.2s;}
+.nav a:hover{border-color:var(--cyan);box-shadow:0 0 12px rgba(0,229,255,.25);}
+.wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:22px 16px 80px;}
+.rainbow{height:3px;background:linear-gradient(90deg,var(--orange),var(--amber),var(--green),var(--cyan),var(--blue),var(--magenta));border-radius:2px;margin-bottom:20px;box-shadow:0 0 12px rgba(0,229,255,.3);}
+h1{font-size:26px;font-weight:900;line-height:1.15;margin-bottom:8px;}
+h1 span{color:var(--cyan);}
+.lead{color:var(--soft);font-size:15px;margin-bottom:20px;}
+.gauge{display:flex;align-items:center;gap:16px;background:linear-gradient(145deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px;}
+.gauge svg{flex-shrink:0;transform:rotate(-90deg);}
+.gauge .track{stroke:var(--line);}
+.gauge .bar{stroke:url(#gg);stroke-linecap:round;transition:stroke-dashoffset .6s ease;}
+.gnum{position:relative;}
+.gnum b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Courier New',monospace;font-size:18px;color:var(--cyan);}
+.gtext{flex:1;min-width:0;}
+.gtext .t{font-weight:bold;font-size:16px;margin-bottom:3px;}
+.gtext .s{color:var(--muted);font-size:13px;line-height:1.4;}
+.verdict{border-radius:14px;padding:14px 16px;margin-bottom:16px;font-size:15px;font-weight:bold;line-height:1.45;border:1px solid var(--line);background:var(--panel);color:var(--soft);}
+.verdict.good{border-color:var(--green);background:rgba(0,230,118,.10);color:var(--green);}
+.verdict.bad{border-color:var(--red);background:rgba(255,71,87,.10);color:#ffb3ba;}
+.verdict.warn{border-color:var(--amber);background:rgba(255,179,71,.10);color:var(--amber);}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.ctl{flex:1;min-width:130px;padding:14px 10px;border-radius:12px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;transition:.2s;border:1.5px solid var(--line2);background:var(--panel);color:var(--soft);}
+.ctl:hover{border-color:var(--cyan);color:var(--cyan);}
+.ctl.primary{background:linear-gradient(135deg,var(--cyan),var(--blue));border:none;color:#001018;box-shadow:0 6px 18px rgba(0,229,255,.3);}
+.ctl.primary:active{transform:translateY(2px);}
+.ctl.on{border-color:var(--amber);background:rgba(255,179,71,.14);color:var(--amber);}
+.ctl:disabled{opacity:.45;cursor:not-allowed;}
+.check{background:var(--panel);border:1px solid var(--line);border-left-width:4px;border-radius:14px;padding:14px;margin-bottom:10px;transition:.25s;opacity:0;transform:translateY(10px);}
+.check.in{opacity:1;transform:none;}
+.check.ok{border-left-color:var(--green);}
+.check.warn{border-left-color:var(--amber);}
+.check.bad{border-left-color:var(--red);}
+.check.run{border-left-color:var(--cyan);}
+.chead{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.cicon{font-size:19px;flex-shrink:0;width:24px;text-align:center;}
+.ctitle{flex:1;font-size:14px;font-weight:bold;line-height:1.3;}
+.pill{font-family:'Courier New',monospace;font-size:10px;font-weight:bold;padding:4px 9px;border-radius:9px;white-space:nowrap;letter-spacing:.5px;}
+.pill.ok{background:rgba(0,230,118,.15);color:var(--green);}
+.pill.warn{background:rgba(255,179,71,.15);color:var(--amber);}
+.pill.bad{background:rgba(255,71,87,.15);color:var(--red);}
+.pill.run{background:rgba(0,229,255,.15);color:var(--cyan);animation:pulse 1.2s infinite;}
+@keyframes pulse{50%{opacity:.4;}}
+.cbody{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);}
+.check.open .cbody{display:block;}
+.cdetail{font-family:'Courier New',monospace;font-size:12px;color:var(--soft);word-break:break-word;line-height:1.5;margin-bottom:8px;}
+.cfix{font-size:13px;color:var(--amber);line-height:1.5;background:rgba(255,179,71,.07);border:1px dashed rgba(255,179,71,.35);border-radius:10px;padding:10px;}
+.check.ok .cfix{display:none;}
+h2{font-family:'Courier New',monospace;font-size:13px;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin:26px 0 12px;scroll-margin-top:calc(var(--nav) + 12px);}
+.fixcard{background:linear-gradient(145deg,var(--panel),var(--panel2));border:1px solid var(--line2);border-radius:16px;padding:16px;margin-bottom:12px;}
+.fixcard .ft{display:flex;align-items:center;gap:9px;margin-bottom:6px;}
+.fixcard .ft .fi{font-size:20px;}
+.fixcard .ft b{font-size:15px;}
+.fixcard .fd{font-size:13px;color:var(--soft);line-height:1.5;margin-bottom:12px;}
+.fixcard .fstat{font-family:'Courier New',monospace;font-size:12px;line-height:1.5;padding:10px;border-radius:10px;background:#04070f;border:1px solid var(--line);color:var(--muted);margin-bottom:10px;word-break:break-word;}
+.fixcard .fstat.done{border-color:var(--green);color:var(--green);}
+.fixcard .fstat.err{border-color:var(--red);color:#ffb3ba;}
+.fbtns{display:flex;gap:8px;flex-wrap:wrap;}
+.fb{flex:1;min-width:110px;padding:13px 10px;border-radius:11px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;transition:.2s;border:1.5px solid var(--line2);background:transparent;color:var(--soft);}
+.fb:hover{border-color:var(--cyan);color:var(--cyan);}
+.fb.build{background:linear-gradient(135deg,var(--orange),var(--amber));border:none;color:#1a0d00;box-shadow:0 6px 16px rgba(255,122,0,.28);}
+.fb.build:active{transform:translateY(2px);}
+.fb.dl{border-color:var(--green);color:var(--green);}
+.fb.dl:hover{background:rgba(0,230,118,.12);}
+.fb:disabled{opacity:.4;cursor:not-allowed;}
+.send{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;}
+.send .lbl{font-size:13px;color:var(--soft);margin-bottom:8px;font-weight:bold;}
+.row{display:flex;gap:8px;align-items:stretch;}
+.row code{flex:1;min-width:0;font-family:'Courier New',monospace;font-size:11px;color:var(--orange);background:#04070f;border:1px solid var(--line);border-radius:10px;padding:10px;word-break:break-all;line-height:1.4;}
+.copy{flex-shrink:0;padding:10px 13px;border-radius:10px;border:1.5px solid var(--cyan);background:transparent;color:var(--cyan);font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;transition:.2s;}
+.copy:hover{background:rgba(0,229,255,.12);}
+.send .hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45;}
+.wm{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.wm a{flex:1;min-width:150px;text-align:center;text-decoration:none;color:var(--green);border:1.5px solid var(--green);border-radius:11px;padding:12px 8px;font-size:13px;font-weight:bold;transition:.2s;}
+.wm a:hover{background:rgba(0,230,118,.12);}
+.steps{background:var(--panel);border:1px dashed var(--line2);border-radius:14px;padding:14px;font-size:13px;color:var(--soft);line-height:1.6;}
+.steps b{color:var(--cyan);}
+.steps ol{margin-left:18px;}
+.steps li{padding:3px 0;}
+footer{margin-top:28px;border-top:1px dashed var(--line);padding-top:16px;color:var(--muted);font-size:11px;text-align:center;font-family:'Courier New',monospace;letter-spacing:1px;}
+footer a{color:var(--cyan);}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(18px);background:var(--panel);border:1px solid var(--green);color:var(--green);padding:12px 18px;border-radius:12px;font-size:14px;font-weight:bold;z-index:90;opacity:0;pointer-events:none;transition:.3s;box-shadow:0 8px 24px rgba(0,0,0,.55);max-width:90%;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.alert{background:rgba(255,71,87,.1);border:1px solid var(--red);border-radius:12px;padding:14px;color:#ffb3ba;font-size:14px;line-height:1.5;margin-bottom:16px;}
+@media(prefers-reduced-motion:reduce){.bg-aurora i{animation:none;}.check{opacity:1;transform:none;}.pill.run{animation:none;}html{scroll-behavior:auto;}}
+</style>
+</head>
+<body>
+<div class="bg-aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-grain" aria-hidden="true"></div>
+
+<nav class="nav"><div class="ring"></div><b>МАСТЕР <i>РОМАН</i></b><a href="https://master-romanrf.github.io/">← На сайт</a></nav>
+
+<div class="wrap">
+<div class="rainbow"></div>
+<h1>Инспектор сайта <span>и автопочинка</span></h1>
+<p class="lead">Проверяет, что видит робот Яндекса, и собирает готовые файлы. Ничего не меняет на сайте сам — ты только загружаешь то, что он собрал.</p>
+
+<div id="fileAlert"></div>
+
+<div class="gauge">
+  <div class="gnum">
+    <svg width="86" height="86" viewBox="0 0 86 86">
+      <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00e5ff"/><stop offset="1" stop-color="#00e676"/></linearGradient></defs>
+      <circle class="track" cx="43" cy="43" r="36" fill="none" stroke-width="7"/>
+      <circle class="bar" id="gBar" cx="43" cy="43" r="36" fill="none" stroke-width="7" stroke-dasharray="226.2" stroke-dashoffset="226.2"/>
+    </svg>
+    <b id="gNum">0/13</b>
+  </div>
+  <div class="gtext"><div class="t" id="gTitle">Готовлю проверку…</div><div class="s" id="gSub">Смотрю файлы так же, как их читает робот.</div></div>
+</div>
+
+<div class="verdict" id="verdict">Читаю файлы сайта…</div>
+
+<div class="controls">
+  <button class="ctl primary" id="runBtn" onclick="runAll()">↻ ПРОВЕРИТЬ СНОВА</button>
+  <button class="ctl" id="onlyBtn" onclick="toggleOnly()">ТОЛЬКО ПРОБЛЕМЫ</button>
+  <button class="ctl" onclick="copyReport()">📋 ОТЧЁТ</button>
+</div>
+
+<div id="checks"></div>
+
+<h2>Починить в один тап</h2>
+
+<div class="fixcard">
+  <div class="ft"><span class="fi">🔗</span><b>Ссылка на справочник в главной</b></div>
+  <div class="fd">Возьму твою текущую главную прямо с сайта и добавлю в футер одну ссылку на справочник. Больше ничего не тронется: ни квиз, ни Метрика, ни стили.</div>
+  <div class="fstat" id="stIndex">Нажми «Собрать» — подготовлю готовый index.html</div>
+  <div class="fbtns">
+    <button class="fb build" id="bIndex" onclick="buildIndex()">⚙ Собрать</button>
+    <button class="fb dl" id="dIndex" onclick="dl('index')" disabled>⬇ Скачать</button>
+    <button class="fb" id="cIndex" onclick="cp('index')" disabled>Копировать</button>
+  </div>
+</div>
+
+<div class="fixcard">
+  <div class="ft"><span class="fi">🗺️</span><b>sitemap.xml</b></div>
+  <div class="fd">Чистый XML с двумя адресами: главная и справочник. Именно этот файл принимается в поле «Файлы Sitemap».</div>
+  <div class="fstat" id="stMap">Нажми «Собрать» — подготовлю sitemap.xml</div>
+  <div class="fbtns">
+    <button class="fb build" onclick="buildMap()">⚙ Собрать</button>
+    <button class="fb dl" id="dMap" onclick="dl('map')" disabled>⬇ Скачать</button>
+    <button class="fb" id="cMap" onclick="cp('map')" disabled>Копировать</button>
+  </div>
+</div>
+
+<div class="fixcard">
+  <div class="ft"><span class="fi">🤖</span><b>robots.txt</b></div>
+  <div class="fd">Правила для роботов с указанием sitemap и очисткой служебных параметров, чтобы страницы не дублировались в индексе.</div>
+  <div class="fstat" id="stRob">Нажми «Собрать» — подготовлю robots.txt</div>
+  <div class="fbtns">
+    <button class="fb build" onclick="buildRob()">⚙ Собрать</button>
+    <button class="fb dl" id="dRob" onclick="dl('rob')" disabled>⬇ Скачать</button>
+    <button class="fb" id="cRob" onclick="cp('rob')" disabled>Копировать</button>
+  </div>
+</div>
+
+<div class="fixcard">
+  <div class="ft"><span class="fi">🖼️</span><b>og-image.svg</b></div>
+  <div class="fd">Картинка для репостов в MAX, Telegram и Одноклассниках — в цветах сайта: тёмный фон, оранжевый код, зелёная цена.</div>
+  <div class="fstat" id="stOg">Нажми «Собрать» — подготовлю og-image.svg</div>
+  <div class="fbtns">
+    <button class="fb build" onclick="buildOg()">⚙ Собрать</button>
+    <button class="fb dl" id="dOg" onclick="dl('og')" disabled>⬇ Скачать</button>
+    <button class="fb" id="cOg" onclick="cp('og')" disabled>Копировать</button>
+  </div>
+</div>
+
+<div class="steps">
+  <b>Как загрузить собранный файл:</b>
+  <ol>
+    <li>Нажми «Скачать» — файл попадёт в «Загрузки» телефона.</li>
+    <li>GitHub → репозиторий → <b>Add file → Upload files</b>.</li>
+    <li>Выбери скачанный файл → <b>Commit changes</b>.</li>
+    <li>Вернись сюда и нажми «Проверить снова».</li>
+  </ol>
+  Если «Скачать» не срабатывает во встроенном просмотре — открой эту страницу в Chrome или нажми «Копировать» и вставь текст в файл на GitHub.
+</div>
+
+<h2>Что отправить в Вебмастер</h2>
+<div class="send">
+  <div class="lbl">1. Индексирование → Файлы Sitemap</div>
+  <div class="row"><code id="u1">https://master-romanrf.github.io/sitemap.xml</code><button class="copy" onclick="copyText('u1')">Копировать</button></div>
+  <div class="hint">Сюда идёт только XML-файл. Адрес страницы справочника сюда вставлять нельзя — будет «некорректный».</div>
+</div>
+<div class="send">
+  <div class="lbl">2. Индексирование → Переобход страниц</div>
+  <div class="row"><code id="u2">https://master-romanrf.github.io/spravochnik.html</code><button class="copy" onclick="copyText('u2')">Копировать</button></div>
+  <div class="hint">Сюда — адреса страниц: справочник и главная. Это просьба к роботу прочитать их заново сегодня.</div>
+  <div class="wm">
+    <a href="https://webmaster.yandex.ru/sites/" target="_blank" rel="noopener">Открыть Вебмастер</a>
+    <a href="https://metrika.yandex.ru/" target="_blank" rel="noopener">Открыть Метрику</a>
+  </div>
+</div>
+
+<footer>© МАСТЕР РОМАН · ИНСПЕКТОР САЙТА · <a href="https://master-romanrf.github.io/">главная</a></footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var BASE='https://master-romanrf.github.io';
+var onlyProblems=false,results=[],DATA=null,running=false;
+var FILES={index:null,map:null,rob:null,og:null};
+var NAMES={index:'index.html',map:'sitemap.xml',rob:'robots.txt',og:'og-image.svg'};
+
+function el(id){return document.getElementById(id);}
+function toast(m){var t=el('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},2400);}
+function clip(txt,msg){
+  function done(){toast(msg||'Скопировано');}
+  function fb(){var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){toast('Не удалось скопировать');}document.body.removeChild(ta);}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,fb);}else{fb();}
+}
+function copyText(id){clip(el(id).textContent);}
+function copyReport(){
+  if(!results.length){toast('Сначала запусти проверку');return;}
+  var lines=['Инспектор сайта master-romanrf.github.io','Дата: '+new Date().toLocaleString('ru-RU'),''];
+  for(var i=0;i<results.length;i++){var r=results[i];lines.push((r.state==='ok'?'OK':(r.state==='warn'?'ВНИМАНИЕ':'ПРОБЛЕМА'))+' — '+r.title+(r.detail?' :: '+r.detail:''));}
+  clip(lines.join('\n'),'Отчёт скопирован');
+}
+function toggleOnly(){onlyProblems=!onlyProblems;el('onlyBtn').classList.toggle('on',onlyProblems);paint();}
+
+function grab(path){
+  var url=BASE+path+(path.indexOf('?')>-1?'&':'?')+'_='+Date.now();
+  return new Promise(function(resolve){
+    var settled=false;
+    var tm=setTimeout(function(){if(!settled){settled=true;resolve({ok:false,status:0,text:'',err:'таймаут'});}},12000);
+    function fin(v){if(settled)return;settled=true;clearTimeout(tm);resolve(v);}
+    try{
+      fetch(url,{cache:'no-store'}).then(function(res){return res.text().then(function(t){fin({ok:res.ok,status:res.status,text:t});});}).catch(function(){fin({ok:false,status:0,text:'',err:'сеть'});});
+    }catch(e){fin({ok:false,status:0,text:'',err:'fetch недоступен'});}
+  });
+}
+function parseHTML(t){try{return new DOMParser().parseFromString(t,'text/html');}catch(e){return null;}}
+function parseXML(t){try{return new DOMParser().parseFromString(t,'application/xml');}catch(e){return null;}}
+
+var CHECKS=[
+ {icon:'🏠',title:'Главная страница открывается',run:function(d){
+   if(!d.home.ok)return{state:'bad',detail:'HTTP '+d.home.status+(d.home.err?' ('+d.home.err+')':''),fix:'Главная недоступна. Проверь, что index.html есть в репозитории и GitHub Pages включён.'};
+   return{state:'ok',detail:'HTTP 200 · '+d.home.text.length+' символов'};}},
+ {icon:'✨',title:'На главной новая версия сайта',run:function(d){
+   if(!d.home.ok)return{state:'bad',detail:'Главная не прочитана',fix:'Сначала почини главную.'};
+   if(d.home.text.indexOf('ПРОЙТИ ДИАГНОСТИКУ')>-1)return{state:'ok',detail:'Кнопка «ПРОЙТИ ДИАГНОСТИКУ» найдена — новая версия'};
+   if(d.home.text.indexOf('Мои заявки')>-1)return{state:'warn',detail:'Отдаётся старая версия с заявками',fix:'index.html не обновлён или кэш GitHub Pages. Открой главную с ?v=9 и проверь содержимое файла.'};
+   return{state:'warn',detail:'Версия не определена',fix:'Открой главную вручную и убедись, что там новый дизайн.'};}},
+ {icon:'🔑',title:'Подтверждение прав Яндекса',run:function(d){
+   var doc=parseHTML(d.home.text);if(!doc)return{state:'bad',detail:'HTML главной не разобран',fix:'Проверь целостность index.html.'};
+   var m=doc.querySelector('meta[name="yandex-verification"]');
+   if(m&&m.getAttribute('content'))return{state:'ok',detail:'yandex-verification = '+m.getAttribute('content')};
+   return{state:'bad',detail:'Метатег yandex-verification не найден',fix:'Верни в head главной метатег из Вебмастера, иначе права слетят.'};}},
+ {icon:'📊',title:'Счётчик Метрики 114641924',run:function(d){
+   if(d.home.text.indexOf('114641924')>-1)return{state:'ok',detail:'Счётчик 114641924 найден'};
+   return{state:'warn',detail:'Счётчик не найден',fix:'Верни код Метрики в head главной — он ускоряет обнаружение страниц.'};}},
+ {icon:'📖',title:'Справочник открывается',run:function(d){
+   if(d.spr.status===404)return{state:'bad',detail:'HTTP 404 — файла нет',fix:'Создай spravochnik.html. Пока его нет, переобход даёт «некорректный».'};
+   if(!d.spr.ok)return{state:'bad',detail:'HTTP '+d.spr.status,fix:'Имя файла: spravochnik.html, строчными, без пробелов.'};
+   return{state:'ok',detail:'HTTP 200 · '+d.spr.text.length+' символов текста'};}},
+ {icon:'📋',title:'Таблица кодов в справочнике',run:function(d){
+   var doc=parseHTML(d.spr.text);if(!doc)return{state:'bad',detail:'Справочник не разобран',fix:'Загрузи справочник целиком.'};
+   var rows=doc.querySelectorAll('table tr').length;
+   if(rows>=30)return{state:'ok',detail:'Строк в таблице: '+rows+' — робот видит весь текст'};
+   if(rows>0)return{state:'warn',detail:'Строк всего: '+rows,fix:'Нужна полная таблица 37 кодов — это главный текст для поиска.'};
+   return{state:'bad',detail:'Таблица не найдена',fix:'Загрузи полную версию справочника с таблицей.'};}},
+ {icon:'🔗',title:'Canonical у справочника',run:function(d){
+   var doc=parseHTML(d.spr.text);if(!doc)return{state:'bad',detail:'Справочник не разобран',fix:'Загрузи справочник целиком.'};
+   var c=doc.querySelector('link[rel="canonical"]');
+   if(c)return{state:'ok',detail:c.getAttribute('href')};
+   return{state:'warn',detail:'Canonical не найден',fix:'Добавь в head справочника canonical на его адрес.'};}},
+ {icon:'❓',title:'FAQ-разметка для Яндекса',run:function(d){
+   if(d.spr.text.indexOf('FAQPage')>-1)return{state:'ok',detail:'Schema.org FAQPage найден'};
+   return{state:'warn',detail:'FAQPage не найден',fix:'Добавь в справочник JSON-LD с FAQPage.'};}},
+ {icon:'🗺️',title:'sitemap.xml читается',run:function(d){
+   if(!d.sm.ok)return{state:'bad',detail:'HTTP '+d.sm.status,fix:'Собери sitemap.xml ниже и загрузи в репозиторий.'};
+   var x=parseXML(d.sm.text);
+   if(!x||x.getElementsByTagName('parsererror').length)return{state:'bad',detail:'XML с ошибкой — Яндекс пишет «некорректный»',fix:'Собери чистый sitemap.xml кнопкой ниже и замени файл.'};
+   return{state:'ok',detail:'XML корректен'};}},
+ {icon:'📍',title:'В sitemap есть обе страницы',run:function(d){
+   var x=parseXML(d.sm.text);if(!x)return{state:'bad',detail:'sitemap не разобран',fix:'Собери sitemap.xml ниже.'};
+   var locs=x.getElementsByTagName('loc'),list=[];
+   for(var i=0;i<locs.length;i++)list.push(locs[i].textContent.trim());
+   var hasHome=list.some(function(u){return u===BASE+'/'||u===BASE;});
+   var hasSpr=list.some(function(u){return u.indexOf('spravochnik.html')>-1;});
+   if(hasHome&&hasSpr)return{state:'ok',detail:'Адресов в sitemap: '+list.length};
+   return{state:'bad',detail:'Адресов: '+list.length+(hasSpr?'':' · нет справочника')+(hasHome?'':' · нет главной'),fix:'Собери sitemap.xml кнопкой ниже — там будут оба адреса.'};}},
+ {icon:'🤖',title:'robots.txt с указанием sitemap',run:function(d){
+   if(!d.rb.ok)return{state:'warn',detail:'HTTP '+d.rb.status,fix:'Собери robots.txt ниже и загрузи.'};
+   if(d.rb.text.indexOf('Sitemap:')>-1){var l=d.rb.text.split('\n').filter(function(s){return s.indexOf('Sitemap:')>-1;})[0];return{state:'ok',detail:l};}
+   return{state:'warn',detail:'Строка Sitemap не найдена',fix:'Собери robots.txt кнопкой ниже.'};}},
+ {icon:'🖼️',title:'Картинка для репостов',run:function(d){
+   if(d.og.ok&&d.og.text.indexOf('<svg')>-1)return{state:'ok',detail:'og-image.svg на месте'};
+   if(d.og.status===404)return{state:'warn',detail:'og-image.svg не найден (404)',fix:'Собери og-image.svg ниже — без него репост выглядит голым текстом.'};
+   return{state:'warn',detail:'HTTP '+d.og.status,fix:'Собери og-image.svg кнопкой ниже.'};}},
+ {icon:'🔀',title:'Ссылка с главной на справочник',run:function(d){
+   var doc=parseHTML(d.home.text);if(!doc)return{state:'warn',detail:'Главная не разобрана',fix:'Проверь главную.'};
+   if(doc.querySelector('a[href*="spravochnik"]'))return{state:'ok',detail:'Ссылка есть — вес главной передаётся справочнику'};
+   return{state:'warn',detail:'Ссылки на справочник с главной нет',fix:'Нажми «Собрать» в блоке «Ссылка на справочник в главной» ниже и загрузи готовый index.html.'};}}
+];
+
+function skeleton(){
+  var h='';
+  for(var i=0;i<CHECKS.length;i++){
+    h+='<div class="check run" id="ck'+i+'"><div class="chead" onclick="toggleCard('+i+')"><span class="cicon">'+CHECKS[i].icon+'</span><span class="ctitle">'+CHECKS[i].title+'</span><span class="pill run" id="pl'+i+'">ПРОВЕРКА</span></div><div class="cbody"><div class="cdetail" id="dt'+i+'">Смотрю файл…</div><div class="cfix" id="fx'+i+'"></div></div></div>';
+  }
+  el('checks').innerHTML=h;
+  for(var j=0;j<CHECKS.length;j++){(function(k){setTimeout(function(){var n=el('ck'+k);if(n)n.classList.add('in');},k*40);})(j);}
+}
+function toggleCard(i){var n=el('ck'+i);if(n)n.classList.toggle('open');}
+function setGauge(done,total){var c=226.2;el('gBar').setAttribute('stroke-dashoffset',String(c-c*(done/total)));el('gNum').textContent=done+'/'+total;}
+function paint(){for(var i=0;i<results.length;i++){var n=el('ck'+i);if(n)n.style.display=(onlyProblems&&results[i].state==='ok')?'none':'';}}
+function finish(){
+  var ok=0,warn=0,bad=0;
+  for(var i=0;i<results.length;i++){if(results[i].state==='ok')ok++;else if(results[i].state==='warn')warn++;else bad++;}
+  setGauge(results.length,CHECKS.length);
+  el('gTitle').textContent='В порядке: '+ok+' из '+results.length;
+  el('gSub').textContent=warn+' предупреждений · '+bad+' проблем';
+  var v=el('verdict');
+  if(bad===0&&warn===0){v.className='verdict good';v.textContent='Всё готово. Отправляй sitemap.xml в «Файлы Sitemap», а главную и справочник — в «Переобход страниц».';}
+  else if(bad===0){v.className='verdict warn';v.textContent='Критичных проблем нет. Предупреждения закрываются кнопками «Собрать» ниже.';}
+  else{v.className='verdict bad';v.textContent='Проблем: '+bad+'. Открой красные карточки — там написано, что сделать. Большинство закрывается кнопками «Собрать» ниже.';}
+  el('runBtn').disabled=false;running=false;paint();
+}
+function runAll(){
+  if(running)return;running=true;el('runBtn').disabled=true;
+  results=[];el('verdict').className='verdict';el('verdict').textContent='Читаю файлы сайта…';
+  el('gTitle').textContent='Проверяю…';el('gSub').textContent='Главная, справочник, sitemap, robots, картинка.';
+  setGauge(0,CHECKS.length);skeleton();
+  Promise.all([grab('/'),grab('/spravochnik.html'),grab('/sitemap.xml'),grab('/robots.txt'),grab('/og-image.svg')]).then(function(r){
+    DATA={home:r[0],spr:r[1],sm:r[2],rb:r[3],og:r[4]};
+    for(var i=0;i<CHECKS.length;i++){
+      var res;try{res=CHECKS[i].run(DATA);}catch(e){res={state:'bad',detail:'Ошибка проверки',fix:'Обнови страницу и запусти снова.'};}
+      results.push({title:CHECKS[i].title,state:res.state,detail:res.detail||'',fix:res.fix||''});
+    }
+    for(var j=0;j<results.length;j++){
+      (function(k){setTimeout(function(){
+        var r=results[k],n=el('ck'+k);if(!n)return;
+        n.className='check in '+r.state;
+        var p=el('pl'+k);p.className='pill '+r.state;
+        p.textContent=r.state==='ok'?'ГОТОВО':(r.state==='warn'?'ВНИМАНИЕ':'ПРОБЛЕМА');
+        el('dt'+k).textContent=r.detail;el('fx'+k).textContent=r.fix;
+        if(r.state!=='ok')n.classList.add('open');
+        setGauge(k+1,CHECKS.length);
+        if(k===results.length-1)finish();
+      },k*90);})(j);
+    }
+  });
+}
+
+function ready(kind,statId,msg){
+  var s=el(statId);s.className='fstat done';s.textContent=msg;
+  var d=el('d'+kind.charAt(0).toUpperCase()+kind.slice(1));
+  var c=el('c'+kind.charAt(0).toUpperCase()+kind.slice(1));
+  if(d)d.disabled=false;if(c)c.disabled=false;
+}
+function fail(statId,msg){var s=el(statId);s.className='fstat err';s.textContent=msg;}
+
+function buildIndex(){
+  var s=el('stIndex');s.className='fstat';s.textContent='Беру главную с сайта…';
+  grab('/').then(function(r){
+    if(!r.ok||!r.text){fail('stIndex','Не удалось получить главную (HTTP '+r.status+'). Открой страницу в Chrome и попробуй снова.');return;}
+    var doc=parseHTML(r.text);
+    if(!doc||!doc.querySelector('body')){fail('stIndex','HTML главной не разобран. Проверь index.html.');return;}
+    if(doc.querySelector('a[href*="spravochnik"]')){
+      FILES.index='<!DOCTYPE html>\n'+doc.documentElement.outerHTML;
+      ready('index','stIndex','Ссылка на справочник уже есть — файл собран без изменений, можно не загружать.');
+      return;
+    }
+    var a=doc.createElement('a');
+    a.className='foot-link';
+    a.setAttribute('href',BASE+'/spravochnik.html');
+    a.textContent='Справочник кодов ошибок';
+    var placed=false;
+    var footer=doc.querySelector('footer');
+    if(footer){
+      var dr=footer.querySelector('.drainbow');
+      if(dr){footer.insertBefore(a,dr);placed=true;}
+      else{
+        var links=footer.querySelectorAll('.foot-link');
+        if(links.length){var last=links[links.length-1];last.parentNode.insertBefore(a,last.nextSibling);placed=true;}
+        else{footer.appendChild(a);placed=true;}
+      }
+    }
+    if(!placed){
+      var wrap=doc.querySelector('.wrap');
+      if(wrap){wrap.appendChild(a);placed=true;}
+    }
+    if(!placed){fail('stIndex','Не нашёл футер в главной. Вставь ссылку вручную — строка есть в блоке ниже.');return;}
+    FILES.index='<!DOCTYPE html>\n'+doc.documentElement.outerHTML;
+    ready('index','stIndex','Готово: добавлена одна ссылка «Справочник кодов ошибок» в футер. Остальное не тронуто. Скачай и загрузи index.html.');
+  });
+}
+function buildMap(){
+  var today=new Date().toISOString().slice(0,10);
+  FILES.map='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>'+BASE+'/</loc>\n    <lastmod>'+today+'</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n  <url>\n    <loc>'+BASE+'/spravochnik.html</loc>\n    <lastmod>'+today+'</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>\n</urlset>\n';
+  ready('map','stMap','Готово: 2 адреса, дата '+today+'. Скачай и замени sitemap.xml.');
+}
+function buildRob(){
+  FILES.rob='User-agent: *\nAllow: /\nDisallow: /*?setup=\nDisallow: /*?v=\nDisallow: /check.html\nSitemap: '+BASE+'/sitemap.xml\n\nUser-agent: Yandex\nAllow: /\nDisallow: /*?setup=\nDisallow: /*?v=\nDisallow: /check.html\nSitemap: '+BASE+'/sitemap.xml\nClean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&v&setup\n';
+  ready('rob','stRob','Готово: правила для всех роботов и Яндекса, sitemap указан, инспектор закрыт от индексации.');
+}
+function buildOg(){
+  FILES.og='<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">\n<defs>\n<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#030814"/><stop offset="0.5" stop-color="#071120"/><stop offset="1" stop-color="#0d1a30"/></linearGradient>\n<radialGradient id="glow" cx="0.18" cy="0.15" r="0.7"><stop offset="0" stop-color="#ff7a00" stop-opacity="0.28"/><stop offset="1" stop-color="#ff7a00" stop-opacity="0"/></radialGradient>\n<linearGradient id="rain" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff7a00"/><stop offset="0.25" stop-color="#ffb347"/><stop offset="0.5" stop-color="#00e676"/><stop offset="0.75" stop-color="#00e5ff"/><stop offset="1" stop-color="#ff3d81"/></linearGradient>\n</defs>\n<rect width="1200" height="630" fill="url(#bg)"/>\n<rect width="1200" height="630" fill="url(#glow)"/>\n<rect x="0" y="0" width="1200" height="8" fill="url(#rain)"/>\n<circle cx="86" cy="86" r="26" fill="none" stroke="#ff7a00" stroke-width="6"/>\n<text x="132" y="78" font-family="Courier New, monospace" font-size="30" fill="#e8edf5" letter-spacing="3">МАСТЕР <tspan fill="#00e5ff">РОМАН</tspan></text>\n<text x="132" y="110" font-family="Courier New, monospace" font-size="20" fill="#7a8ba8" letter-spacing="5">ЧЕСТНЫЙ РЕМОНТ</text>\n<text x="60" y="330" font-family="Courier New, monospace" font-size="150" fill="#ff7a00">4E</text>\n<text x="60" y="386" font-family="Courier New, monospace" font-size="30" fill="#ffb347" letter-spacing="6">SAMSUNG · LG · BOSCH</text>\n<text x="60" y="446" font-family="Arial, sans-serif" font-size="42" fill="#ffffff">Ошибка на дисплее? Почините сами.</text>\n<rect x="60" y="486" width="520" height="96" rx="18" fill="none" stroke="#00e676" stroke-width="4"/>\n<text x="88" y="536" font-family="Arial, sans-serif" font-size="40" fill="#00e676" font-weight="bold">800 ₽</text>\n<text x="196" y="536" font-family="Arial, sans-serif" font-size="28" fill="#7a8ba8" text-decoration="line-through">3000 ₽</text>\n<text x="88" y="568" font-family="Courier New, monospace" font-size="20" fill="#b8c4d6">вместо выезда мастера</text>\n<text x="640" y="520" font-family="Courier New, monospace" font-size="24" fill="#00e5ff">12 лет практики · 37 кодов</text>\n<text x="640" y="556" font-family="Courier New, monospace" font-size="24" fill="#ff7a00">+7 982 304-44-20</text>\n</svg>\n';
+  ready('og','stOg','Готово: картинка 1200×630 в цветах сайта. Скачай и загрузи og-image.svg.');
+}
+function dl(kind){
+  var data=FILES[kind];if(!data){toast('Сначала нажми «Собрать»');return;}
+  try{
+    var type=kind==='map'?'application/xml':(kind==='og'?'image/svg+xml':(kind==='rob'?'text/plain':'text/html'));
+    var blob=new Blob([data],{type:type+';charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');a.href=url;a.download=NAMES[kind];a.style.display='none';
+    document.body.appendChild(a);a.click();
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},1500);
+    toast('Файл '+NAMES[kind]+' скачан');
+  }catch(e){toast('Скачивание недоступно — нажми «Копировать»');}
+}
+function cp(kind){var d=FILES[kind];if(!d){toast('Сначала нажми «Собрать»');return;}clip(d,'Файл '+NAMES[kind]+' скопирован');}
+
+(function(){
+  if(location.protocol==='file:'){
+    el('fileAlert').innerHTML='<div class="alert">Страница открыта как файл с телефона — проверка и сборка не сработают. Загрузи check.html в репозиторий и открой master-romanrf.github.io/check.html</div>';
+    el('gTitle').textContent='Нужен адрес сайта';el('gSub').textContent='Открой через сайт, а не из файлов.';
+    el('verdict').className='verdict bad';el('verdict').textContent='Проверка недоступна в режиме файла.';
+    skeleton();el('runBtn').disabled=true;
+    return;
+  }
+  buildMap();buildRob();buildOg();
+  runAll();
+})();
+</script>
+</body>
+</html>
