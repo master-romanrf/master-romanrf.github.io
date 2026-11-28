@@ -1,8 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://master-romanrf.github.io/sitemap.xml
-
-User-agent: Yandex
-Allow: /
-Sitemap: https://master-romanrf.github.io/sitemap.xml
-Clean-param: utm_source&utm_medium&utm_campaign
